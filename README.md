@@ -61,6 +61,11 @@ The `updateGiftContractAddress` function, accessible only to the `ADMIN_ROLE`, a
 
 The Minting contract separates the token minting functionality from the core GIFT contract, providing a modular and flexible design. The integration with the Chainlink oracle adds an extra layer of security and verification to the minting process. The burning functionality allows for supply management if needed. The ability to update the GIFT contract address ensures that the Minting contract can adapt to changes in the GIFT contract.
 
+
+### Multisig
+Use a multi-signature wallet as the admin account that interacts with the smart contract. This means that any transaction originating from the admin account, including calling the burn function, would require multiple signers to approve the transaction.
+You can use a multi-signature wallet contract, such as the Gnosis Safe (formerly known as Gnosis Multisig), to manage the admin account. The multi-signature wallet contract will handle the collection of signatures and execution of transactions on behalf of the admin account.
+
 ## Conclusion
 
 The GIFT token and minting contracts provide a secure, auditable, and flexible framework for managing gold-backed tokens. The use of access control, upgradability, and optional oracle integration ensures the system can evolve and adapt to future requirements while maintaining a high level of security and transparency.
