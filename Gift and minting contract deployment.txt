@@ -1,0 +1,86 @@
+Deployment Steps for GIFT Token and Minting Contracts
+
+1. Deployment via npx thirdweb:
+
+   a. Install the thirdweb CLI globally:
+      npm install -g @thirdweb-dev/cli
+
+   b. Initialize a new project:
+      npx thirdweb create --contract
+
+   c. Choose the "Empty Contract" template and provide a name for your project.
+
+   d. Copy the GIFT and Minting contract code into the generated contract file.
+
+   e. Deploy the GIFT contract:
+      npx thirdweb deploy
+
+   f. Note down the deployed GIFT contract address.
+
+   g. Update the Minting contract constructor with the GIFT contract address.
+
+   h. Deploy the Minting contract:
+      npx thirdweb deploy
+
+   i. Verify and publish the contracts on the thirdweb dashboard.
+
+2. Deployment via Foundry:
+
+   a. Install Foundry by following the installation guide: https://book.getfoundry.sh/getting-started/installation
+
+   b. Create a new Foundry project:
+      forge init gift-token
+
+   c. Copy the GIFT and Minting contract code into the `src/` directory.
+
+   d. Create a new file `script/Deploy.s.sol` for the deployment script.
+
+   e. In `Deploy.s.sol`, write a deployment script that deploys the GIFT contract, retrieves the deployed address, and deploys the Minting contract with the GIFT contract address.
+
+   f. Configure the `foundry.toml` file with the appropriate settings, such as the Solidity version and optimizer runs.
+
+   g. Compile the contracts:
+      forge build
+
+   h. Deploy the contracts:
+      forge script script/Deploy.s.sol --rpc-url <your-rpc-url> --private-key <your-private-key> --broadcast
+
+   i. Note down the deployed contract addresses.
+
+3. Deployment via Truffle:
+
+   a. Install Truffle globally:
+      npm install -g truffle
+
+   b. Create a new Truffle project:
+      truffle init gift-token
+
+   c. Copy the GIFT and Minting contract code into the `contracts/` directory.
+
+   d. Update the `migrations/` directory with deployment scripts for the GIFT and Minting contracts.
+
+   e. In the deployment script, deploy the GIFT contract first, retrieve the deployed address, and then deploy the Minting contract with the GIFT contract address.
+
+   f. Configure the `truffle-config.js` file with the appropriate settings, such as the Solidity version, network settings, and wallet provider.
+
+   g. Compile the contracts:
+      truffle compile
+
+   h. Deploy the contracts:
+      truffle migrate --network <network-name>
+
+   i. Note down the deployed contract addresses.
+
+4. Upgrading the GIFT Contract:
+
+   a. The GIFT contract is upgradeable using the OpenZeppelin UUPS (Universal Upgradeable Proxy Standard) pattern.
+
+   b. To upgrade the GIFT contract:
+      - Deploy a new version of the GIFT contract with the desired changes.
+      - Call the `upgradeTo` function on the existing GIFT contract, providing the address of the new implementation contract. Only the account with the `UPGRADER_ROLE` can perform this action.
+
+   c. The Minting contract should automatically interact with the upgraded GIFT contract, as it references the GIFT contract using the proxy address.
+
+Note: Make sure to properly set up the required environment variables, such as RPC URLs, private keys, and network configurations, before running the deployment commands.
+
+Remember to verify the deployed contracts on the respective block explorers and update any necessary contract addresses in your application's configuration.
