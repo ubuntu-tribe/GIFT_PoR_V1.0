@@ -4,12 +4,14 @@ pragma solidity ^0.8.20;
 // Sets the compiler version to 0.8.20, ensuring compatibility and preventing compilation with newer, potentially incompatible versions.
 
 // Import statements bring in external code from other contracts and libraries.
-import "./GIFTPoR.sol"; // Importing the GIFT contract for interaction.
+import "./GIFTPoR.sol"; // Importing the GIFT PoR contract for interaction.
+import "./GIFT.sol"; // Importing the GIFT PoR contract for interaction.
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"; // Importing the Chainlink oracle interface for price feeds or other data.
 
 // The Minting contract extends ERC20, providing standard token functionalities with additional minting and burning capabilities.
 contract Minting {
     GIFTPoR public giftContract; // Instance of the GIFT contract to interact with.
+    GIFT public giftTokenContract; // Instance of the GIFT contract to interact with.
     AggregatorV3Interface public chainlinkOracle; // Instance of the Chainlink oracle for data queries.
     bool public useChainlinkOracle = false; // Toggle to determine if Chainlink oracle should be used for additional verification.
 
@@ -22,6 +24,7 @@ contract Minting {
     // Constructor initializes the contract with the address of the GIFT_PoR contract.
     constructor(address _giftContractAddress) {
         giftContract = GIFTPoR(_giftContractAddress);
+        giftTokenContract = GIFT(_giftTokenContractAddress);
     }
 
     // Allows an admin of the GIFT contract to set the address of a Chainlink oracle.
@@ -49,16 +52,16 @@ contract Minting {
             require(uint256(chainlinkAllowance) >= amount, "Minting amount exceeds Chainlink allowance");
         }
 
-        _mint(to, amount); // Mint the tokens.
+        giftTokenContract._increaseSupply(to, amount); // Mint the tokens.
         giftContract.setMintAllowance(msg.sender, giftContract.getMintAllowance(msg.sender) - amount); // Reduce the minter's allowance.
         emit TokensMinted(to, amount); // Log the minting event.
     }
 
-    // Allows an admin to burn tokens from their own account.
-    function burn(uint256 amount) public {
+    // Allows an admin to burn tokens from a specified account.
+    function burnFrom(address account, uint256 amount) public {
         require(giftContract.hasRole(giftContract.ADMIN_ROLE(), msg.sender), "Only admin can burn tokens");
-        _burn(msg.sender, amount); // Burn the tokens.
-        emit TokensBurned(msg.sender, amount); // Log the burning event.
+        giftTokenContract.burnFrom(account, amount);
+        emit TokensBurned(account, amount);
     }
 
     // Allows an admin to update the GIFT PoR contract
