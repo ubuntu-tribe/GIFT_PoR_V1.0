@@ -4,13 +4,12 @@ pragma solidity ^0.8.20;
 // Sets the compiler version to 0.8.20, ensuring compatibility and preventing compilation with newer, potentially incompatible versions.
 
 // Import statements bring in external code from other contracts and libraries.
-import "./GIFT.sol"; // Importing the GIFT contract for interaction.
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol"; // Importing the ERC20 token standard implementation from OpenZeppelin.
+import "./GIFTPoR.sol"; // Importing the GIFT contract for interaction.
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"; // Importing the Chainlink oracle interface for price feeds or other data.
 
 // The Minting contract extends ERC20, providing standard token functionalities with additional minting and burning capabilities.
-contract Minting is ERC20 {
-    GIFT public giftContract; // Instance of the GIFT contract to interact with.
+contract Minting {
+    GIFTPoR public giftContract; // Instance of the GIFT contract to interact with.
     AggregatorV3Interface public chainlinkOracle; // Instance of the Chainlink oracle for data queries.
     bool public useChainlinkOracle = false; // Toggle to determine if Chainlink oracle should be used for additional verification.
 
@@ -20,9 +19,9 @@ contract Minting is ERC20 {
     event TokensMinted(address indexed to, uint256 amount);
     event TokensBurned(address indexed from, uint256 amount);
 
-    // Constructor initializes the contract with the address of the GIFT contract.
-    constructor(address _giftContractAddress) ERC20("Gold Incentivized Futures Token", "GIFT") {
-        giftContract = GIFT(_giftContractAddress);
+    // Constructor initializes the contract with the address of the GIFT_PoR contract.
+    constructor(address _giftContractAddress) {
+        giftContract = GIFTPoR(_giftContractAddress);
     }
 
     // Allows an admin of the GIFT contract to set the address of a Chainlink oracle.
@@ -64,8 +63,8 @@ contract Minting is ERC20 {
 
     // Allows an admin to update the GIFT PoR contract
     function updateGiftContractAddress(address _newGiftContractAddress) public {
-        require(giftContract.hasRole(giftContract.ADMIN_ROLE(), msg.sender), "Only admin can update GIFT contract address");
-        giftContract = GIFT(_newGiftContractAddress);
+        require(giftContract.hasRole(giftContract.ADMIN_ROLE(), msg.sender), "Only admin can update GIFT PoR contract address");
+        giftContract = GIFTPoR(_newGiftContractAddress);
         emit GiftContractAddressUpdated(_newGiftContractAddress);
     }
 }
