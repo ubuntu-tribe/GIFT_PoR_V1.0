@@ -20,19 +20,28 @@ contract GIFT is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
 
 // Structure to represent a vault with a name and an amount.
     struct Vault {
+        uint256 id;
         string name;
         uint256 amount;
     }
 
 
-// Array to store multiple vaults.
+// Array to store multiple vaults and Vaults by ID.
     Vault[] public vaults;
     mapping(address => uint256) public mintAllowances;
+    mapping(uint256 => Vault) public vaultsById;
+
+
+// Variable to keep track of the next vault ID. 
+// A new variable nextVaultId is introduced to keep track of the next available vault ID. 
+// It is initialized to 1 in the initialize function.
+    uint256 public nextVaultId;
 
 
 // Events for logging actions within the contract.
     event UpdateReserve(uint256 GIFT_reserve, address indexed sender);
     event SetMintAllowance(address indexed minter, uint256 allowance);
+    event VaultAdded(uint256 indexed vaultId, string name);
     
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -50,16 +59,21 @@ contract GIFT is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
         _grantRole(AUDITOR_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, upgrader);
+
+// Initialize the next vault ID to 1.
+        nextVaultId = 1;
     }
 
 // Function to add a new vault. Restricted to ADMIN_ROLE.
     function addVault(string memory _name) public onlyRole(ADMIN_ROLE) {
-        vaults.push(Vault({name: _name, amount: 0}));
+        uint256 vaultId = nextVaultId;
+        vaultsById[vaultId] = Vault({id: vaultId, name: _name, amount: 0});
+        nextVaultId++;
+        emit VaultAdded(vaultId, _name);
     }
-
-// Function to retrieve all vaults. Publicly accessible.
-    function getVaults() public view returns (Vault[] memory) {
-        return vaults;
+// Function to retrieve vaults by ID
+    function getVaultById(uint256 _vaultId) public view returns (Vault memory) {
+        return vaultsById[_vaultId];
     }
 
 // Function to set the reserve amount of a specific vault. Restricted to AUDITOR_ROLE.
