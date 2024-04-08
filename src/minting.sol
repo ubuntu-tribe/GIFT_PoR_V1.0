@@ -22,7 +22,7 @@ contract Minting {
     event TokensBurned(address indexed from, uint256 amount);
 
     // Constructor initializes the contract with the address of the GIFT_PoR contract.
-    constructor(address _giftContractAddress) {
+    constructor(address _giftPorContractAddress, address _giftTokenContractAddress) {
         giftContract = GIFTPoR(_giftContractAddress);
         giftTokenContract = GIFT(_giftTokenContractAddress);
     }
