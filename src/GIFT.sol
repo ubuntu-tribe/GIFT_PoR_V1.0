@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+/*// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.20;
 
@@ -14,7 +14,6 @@ import "../por/IReserveConsumerV3.sol";
 
 /**
  * insert token definition here
- */
 contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot {
 
     using AddressUpgradeable for address;
@@ -100,7 +99,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     * allows specified owner to record all addresses and token balances for each address
     * at the block at which the function is called
-    */
+
     function snapshot() public onlyOwner {
         _snapshot();
     }
@@ -108,7 +107,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     * computes amount which an address will be taxed upon transferring/selling their tokens
     * according to the amount being transferred (_transferAmount)
-    */
+    
     function computeTax(uint256 _transferAmount) public view returns(uint256) {
         uint256 taxPercentage;
 
@@ -143,7 +142,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
      * @dev ID of the executing chain
      * @return uint value
-     */
+     
     function getChainID() public view returns (uint256) {
         uint256 id;
         assembly {
@@ -154,7 +153,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
 
     /**
      * @notice Get message for the users delegate transfer signature
-     */
+     
     function delegateTransferProof(
         bytes32 token,
         address delegator,
@@ -178,7 +177,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     * allows owner to update tax percentage amounts for each tax tier
     *
     * emits UpdateTaxPercentages event upon calling
-    */
+    *
     function updateTaxPercentages(
         uint256 _tierOneTaxPercentage,
         uint256 _tierTwoTaxPercentage,
@@ -204,7 +203,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     * allows owner to update tax tier amounts
     *
     * emits UpdateTaxTiers event upon calling
-    */
+    *
     function updateTaxTiers(
         uint256 _tierOneMax,
         uint256 _tierTwoMax,
@@ -225,7 +224,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
 
     /**
     * allows owner to update reserveConsumer
-    */
+    
     function updateReserveConsumer(
         address _reserveConsumer
     ) public onlyOwner {
@@ -237,7 +236,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     * that manages the token total supply
     *
     * emits NewSupplyController event upon calling
-    */
+    *
     function setSupplyController(address _newSupplyController) public onlyOwner {
         require(_newSupplyController != address(0), "cannot set supply controller to address zero");
         _isExcludedFromFees[supplyController] = false;
@@ -251,7 +250,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     * from transfers and sells
     *
     * emits NewSupplyController event upon calling
-    */
+    *
     function setBeneficiary(address _newBeneficiary) public onlyOwner {
         require(_newBeneficiary != address(0), "cannot set beneficiary to address zero");
         _isExcludedFromFees[beneficiary] = false;
@@ -262,7 +261,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
 
     /**
     * allows owner to set certain addresses to be excluded from transfer/sell fees
-    */
+    *
     function setFeeExclusion(address _userAddress, bool _isExcluded) public onlyOwner { // if _isExcluded true, _userAddress will be excluded from fees
         _isExcludedFromFees[_userAddress] = _isExcluded;
     }
@@ -271,14 +270,14 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     * allows owner to set certain addresses to be recognized as liquidity pools.
     * This helps the smart contract to differentiate regular transfers from liquidity pool
     * sells and buys
-    */
+    *
     function setLiquidityPools(address _liquidityPool, bool _isPool) public onlyOwner {
         _isLiquidityPool[_liquidityPool] = _isPool;
     }
 
     /**
     * allows supply controller to mint tokens to itself
-    */
+    *
     function increaseSupply(uint256 _value) public onlySupplyController returns (bool success) {
         _mint(supplyController, _value);
         return true;
@@ -292,7 +291,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     * allows supply controller to burn tokens from an address when they want to redeem
     * their tokens for gold
-    */
+    *
     function redeemGold(address _userAddress, uint256 _value) public onlySupplyController returns (bool success) {
         _burn(_userAddress, _value);
         return true;
@@ -301,7 +300,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     * allows owner to pause the contract which will prevent anyone from
     * transferring their tokens
-    */
+    *
     function pause() public onlyOwner {
         _pause();
     }
@@ -309,14 +308,14 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     * allows owner to unpause the contract which will resume the allowance
     * of token transfers
-    */
+    *
     function unpause() public onlyOwner {
         _unpause();
     }
 
     /**
     * standard ERC20 transfer() with extra functionality to support taxes
-    */
+    *
     function transfer(
         address recipient,
         uint256 amount) public virtual override whenNotPaused returns (bool) {
@@ -326,7 +325,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
 
     /**
     * standard ERC20 transferFrom() with extra functionality to support taxes
-    */
+    *
     function transferFrom(
         address sender,
         address recipient,
@@ -351,7 +350,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
      * @param spender Contract-spender of user funds
      * @param amount The amount of allowance
      * @param networkFee Commission for manager for delegate trx sending
-     */
+     *
     function delegateTransfer(
         bytes memory signature,
         bytes32 token,
@@ -386,7 +385,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
 
     /**
     * standard ERC20 internal transfer function with extra functionality to support taxes
-    */
+    *
     function _transferGIFT(
         address sender,
         address recipient,
@@ -410,7 +409,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
     /**
     Standard ERC20 Hook that is called before any transfer of tokens. This includes
     minting and burning.
-    */
+    *
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -428,7 +427,7 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
      * @dev The proof-of-reserves check is bypassed if feed is not set.
      * @param account The address to mint tokens to
      * @param amount The amount of tokens to mint
-     */
+     *
     function _mint(address account, uint256 amount) internal virtual override {
         if (reserveConsumer == address(0)) {
             super._mint(account, amount);
@@ -462,4 +461,4 @@ contract GIFT is Initializable, OwnableUpgradeable, ERC20Pausable, ERC20Snapshot
         super._mint(account, amount);
     }
 
-}
+}/*
