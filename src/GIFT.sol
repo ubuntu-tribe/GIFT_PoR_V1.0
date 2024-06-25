@@ -407,6 +407,7 @@ contract GIFT is
         return reserve;
     }
 
+
     function decimals()
         public
         view
