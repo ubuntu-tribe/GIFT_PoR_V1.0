@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 // Declaring the contract, inheriting from OpenZeppelin's Initializable, AccessControlUpgradeable, and UUPSUpgradeable to enable upgradeability and access control.
-contract GIFT is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
+contract GIFTPoR is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
