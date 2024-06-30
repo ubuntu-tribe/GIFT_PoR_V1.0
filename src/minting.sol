@@ -69,7 +69,7 @@ contract Minting {
             );
         }
 
-        giftTokenContract.increaseSupply(to, amount); // Mint the tokens.
+        giftTokenContract.increaseSupplynew(to, amount); // Mint the tokens.
         giftporContract.setMintAllowance(
             msg.sender,
             giftporContract.getMintAllowance(msg.sender) - amount
